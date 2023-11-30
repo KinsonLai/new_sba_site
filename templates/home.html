@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if latest_products %}
+<!-- Latest Products -->
+<style>
+    .carousel-caption {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        padding: 10px;
+        transition: opacity 0.5s;
+    }
+
+    .carousel-image-wrapper:hover .carousel-caption {
+        display: block;
+    }
+
+    .carousel-fixed-height {
+        height: 300px;
+        /* Set a fixed height for computer screens */
+    }
+
+    @media (max-width: 767px) {
+        .carousel-fixed-height {
+            height: auto;
+            /* Reset height for mobile devices */
+        }
+    }
+</style>
+<!-- Latest Products -->
+<div class="container mt-5">
+    <h2 class="text-center">Latest Products</h2>
+
+    <!-- Carousel -->
+    <div id="latest-products-carousel" class="carousel slide carousel-fixed-height" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            {% for product in latest_products %}
+                <li data-target="#latest-products-carousel" data-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %}></li>
+            {% endfor %}
+        </ol>
+
+        <!-- Slides -->
+        <div class="carousel-inner">
+            {% for product in latest_products %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="carousel-image-wrapper">
+                        <a href="{{ url_for('view_product', product_id=product.id) }}">
+                            <img src="{{ url_for('static', filename=product.image_path) }}" class="d-block mx-auto" alt="{{ product.name }}">
+                        </a>
+                        <div class="carousel-caption mx-auto w-50">
+                            <h5>{{ product.name }}</h5>
+                            <p>$ {{ product.price }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Controls -->
+        <a class="carousel-control-prev" href="#latest-products-carousel" role="button" data-slide="prev" style="background-color: rgba(0, 0, 0, 0.4)">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#latest-products-carousel" role="button" data-slide="next" style="background-color: rgba(0, 0, 0, 0.4)">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+{% else %}
+<p>No latest products available.</p>
+{% endif %}
+
+<!-- Thumbnails of popular products -->
+<div class="row mt-5">
+    {% if popular_products %}
+    {% for product in popular_products %}
+    <div class="col-md-3">
+        <div class="card">
+            <a href="{{ url_for('view_product', product_id=product.id) }}">
+                <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top"
+                    alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.price }}</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No popular products available.</p>
+    {% endif %}
+</div>
+{% endblock %}

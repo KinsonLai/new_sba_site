@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <img src="{{ url_for('static', filename=product.image_path) }}" alt="Product Image" class="img-fluid">
+    </div>
+    <div class="col-md-6">
+      <h1>{{ product.name }}</h1>
+      <p>{{ product.description }}</p>
+      <p>Price: ${{ product.price }}</p>
+      <p>Rating: {{ product.rating }}</p>
+      <p>Comment: {{ product.comment }}</p>
+      {% if product.latest_product %}
+        <p>This is a latest product.</p>
+      {% endif %}
+      {% if product.popular_product %}
+        <p>This is a popular product.</p>
+      {% endif %}
+      <a href="" class="btn btn-primary">Add to Cart</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

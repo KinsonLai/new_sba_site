@@ -46,6 +46,11 @@ class CommentForm(FlaskForm):
     submit = SubmitField('Add Comment')
 
 
+class RatingForm(FlaskForm):
+    rating = IntegerField('Rating', validators=[DataRequired(), NumberRange(min=1, max=5)])
+    submit = SubmitField('Submit Rating')
+
+
 # Registration form
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])

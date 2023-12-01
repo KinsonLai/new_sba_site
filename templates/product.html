@@ -11,15 +11,66 @@
       <p>{{ product.description }}</p>
       <p>Price: ${{ product.price }}</p>
       <p>Rating: {{ product.rating }}</p>
-      <p>Comment: {{ product.comment }}</p>
       {% if product.latest_product %}
-        <p>This is a latest product.</p>
+      <p>This is a latest product.</p>
       {% endif %}
       {% if product.popular_product %}
-        <p>This is a popular product.</p>
+      <p>This is a popular product.</p>
       {% endif %}
       <a href="" class="btn btn-primary">Add to Cart</a>
     </div>
   </div>
 </div>
+
+<!-- Comment Section -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <h3>Comments</h3>
+    {% for comment in product.comments %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <h5 class="card-title">{{ comment.username }}</h5>
+        <p class="card-text">{{ comment.comment }}</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">{{ comment.date }}</small>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Add Comment Form -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Leave a Comment</h5>
+        <form action="{{ url_for('view_product', product_id=product.id) }}" method="POST">
+          {{ form.hidden_tag() }}
+          <div class="form-group">
+            {{ form.comment(class="form-control", rows="3") }}
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Rating Form -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Give a Rating</h5>
+        <form action="{{ url_for('rate_product', product_id=product.id) }}" method="POST">
+          {{ rating_form.hidden_tag() }}
+          <div class="form-group">
+            <label for="rating">Rating:</label>
+            <select name="rating" id="rating" class="form-control" required>
+              <option value="">Select a rating</option>
+              <option value="1">1 star</option>
+              <option value="2">2 stars</option>
+              <option value="3">3 stars</option>
+              <option value="4">4 stars</option>
+              <option value="5">5 stars</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
 {% endblock %}

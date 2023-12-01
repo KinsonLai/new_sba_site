@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Your Shopping Cart</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product_id, details in shopping_cart.items() %}
+            <tr>
+                <td>{{ details['name'] }}</td>
+                <td>{{ details['price'] }}</td>
+                <td>
+                    <form action="{{ url_for('update_cart', product_id=product_id) }}" method="post" class="form-inline">
+                        <input type="number" name="quantity" value="{{ details['quantity'] }}" min="1" class="form-control">
+                        <input type="submit" value="Update" class="btn btn-primary ml-2">
+                    </form>
+                </td>
+                <td>{{ (details['price']|float) * details['quantity'] }}</td>
+                <td><a href="{{ url_for('delete_from_cart', product_id=product_id) }}" class="btn btn-danger">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Total: {{ total_price }}</strong></p>
+</div>
+{% endblock %}

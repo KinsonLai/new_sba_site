@@ -10,14 +10,14 @@
       <h1>{{ product.name }}</h1>
       <p>{{ product.description }}</p>
       <p>Price: ${{ product.price }}</p>
-      <p>Rating: {{ product.rating }}</p>
+      <p>Rating: {{ product.rating|round }}</p>
       {% if product.latest_product %}
       <p>This is a latest product.</p>
       {% endif %}
       {% if product.popular_product %}
       <p>This is a popular product.</p>
       {% endif %}
-      <a href="" class="btn btn-primary">Add to Cart</a>
+      <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
     </div>
   </div>
 </div>
@@ -31,6 +31,17 @@
       <div class="card-body">
         <h5 class="card-title">{{ comment.username }}</h5>
         <p class="card-text">{{ comment.comment }}</p>
+        <p class="card-text">Rating: {{ comment.rating }}</p>
+        <div class="rating">
+          {% set comment_rating = comment.rating|default(0) %}
+          {% set comment_rating = comment_rating|int %}
+          {% for i in range(5) %}
+          {% if i < comment_rating %} <span class="fa fa-star checked"></span>
+            {% else %}
+            <span class="fa fa-star"></span>
+            {% endif %}
+            {% endfor %}
+        </div>
       </div>
       <div class="card-footer">
         <small class="text-muted">{{ comment.date }}</small>
@@ -38,39 +49,41 @@
     </div>
     {% endfor %}
 
-    <!-- Add Comment Form -->
+    <!-- Add Comment and Rating Form -->
+    {% if session['username'] %}
+    {% if not user_commented and not user_rated %}
     <div class="card mt-4">
       <div class="card-body">
-        <h5 class="card-title">Leave a Comment</h5>
+        <h5 class="card-title">Leave a Comment and Give a Rating</h5>
         <form action="{{ url_for('view_product', product_id=product.id) }}" method="POST">
-          {{ form.hidden_tag() }}
+          {{ form.csrf_token }}
           <div class="form-group">
-            {{ form.comment(class="form-control", rows="3") }}
+            {{ form.comment(class="form-control") }}
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Rating Form -->
-    <div class="card mt-4">
-      <div class="card-body">
-        <h5 class="card-title">Give a Rating</h5>
-        <form action="{{ url_for('rate_product', product_id=product.id) }}" method="POST">
-          {{ rating_form.hidden_tag() }}
           <div class="form-group">
             <label for="rating">Rating:</label>
-            <select name="rating" id="rating" class="form-control" required>
-              <option value="">Select a rating</option>
-              <option value="1">1 star</option>
-              <option value="2">2 stars</option>
-              <option value="3">3 stars</option>
-              <option value="4">4 stars</option>
-              <option value="5">5 stars</option>
-            </select>
+            <div class="rating">
+              {% set rating_value = rating_form.rating.data|default(0) %}
+              {% set rating_value = rating_value|int %}
+              {% for i in range(1, 6) %}
+              {% if i <= rating_value %} 
+              <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" checked />
+              <label for="star{{ i }}"><span class="fa fa-star checked"></span></label>
+              {% else %}
+              <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" />
+              <label for="star{{ i }}"><span class="fa fa-star"></span></label>
+              {% endif %}
+              {% endfor %}
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Submit Comment and Rating</button>
         </form>
       </div>
     </div>
+    {% endif %}
+    {% else %}
+    <p>Please <a href="{{ url_for('login') }}">log in</a> to leave a comment or give a rating.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

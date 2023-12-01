@@ -7,15 +7,6 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h1 class="mb-4">Login</h1>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="form-group">
@@ -30,6 +21,9 @@
                         {{ form.submit(class="btn btn-primary") }}
                     </div>
                 </form>
+                {% if not session['username'] %}
+                <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a>.</p>
+                {% endif %}
             </div>
         </div>
     </div>

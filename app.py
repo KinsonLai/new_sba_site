@@ -1,16 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import current_user, LoginManager
+from sqlalchemy import update
 from werkzeug.utils import secure_filename
 import os
 import uuid
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/upload_products')
 app.secret_key = 'aSecrETkEy'
+login_manager = LoginManager()
+login_manager.init_app(app)
 db = SQLAlchemy(app)
 
 class Product(db.Model):
@@ -31,6 +36,7 @@ class User(db.Model):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Comment(db.Model):
@@ -39,6 +45,8 @@ class Comment(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
 
 
 class CommentForm(FlaskForm):
@@ -67,8 +75,17 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Log In')
 
 
+def admin_required():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        flash('You must be an admin to view this page.')
+        return redirect(url_for('login'))
+
 with app.app_context():
     db.create_all()
+
+@app.template_filter('float')
+def float_filter(value):
+    return float(value)
 
 @app.context_processor
 def inject_username():
@@ -77,6 +94,10 @@ def inject_username():
         return {'username': session['username']}
     else:
         return {'username': None}
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route('/')
 def home():
@@ -90,38 +111,52 @@ def view_product(product_id):
     form = CommentForm()
     rating_form = RatingForm()
 
-    if form.validate_on_submit():
-        rating = int(request.form['rating'])
-        comment = Comment(username=session['username'], product_id=product.id, comment=form.comment.data, rating=rating)
+    # Check if the user has already commented or rated the product
+    user_commented = False
+    user_rated = False
+    if 'username' in session:
+        existing_comment = Comment.query.filter_by(
+            username=session['username'],
+            product_id=product.id
+        ).first()
+        if existing_comment:
+            user_commented = True
+            if existing_comment.rating is not None:
+                user_rated = True
 
-        # Update the product's rating and number of ratings
-        update_stmt = update(Product).where(Product.id == product.id).values(
-            rating=((Product.rating * Product.num_ratings) + rating) / (Product.num_ratings + 1),
-            num_ratings=Product.num_ratings + 1
-        )
-        db.session.execute(update_stmt)
-        db.session.add(comment)
-        db.session.commit()
-        flash('Comment and rating added successfully!', 'success')
+    if form.validate_on_submit() and not user_commented and not user_rated:
+        rating = request.form.get('rating')
+        if rating is not None:
+            rating = int(rating)
+
+            comment = Comment(
+                username=session['username'],
+                product_id=product.id,
+                comment=form.comment.data,
+                rating=rating,
+                date=datetime.now().replace(microsecond=0)  # Remove the decimal seconds
+            )
+
+            # Update the product's rating and number of ratings
+            product.num_ratings += 1
+            product.rating = (
+                (product.rating * (product.num_ratings - 1)) + rating
+            ) / product.num_ratings
+
+            db.session.add(comment)
+            db.session.commit()
+            flash('Comment and rating added successfully!', 'success')
+
+        else:
+            flash('Invalid rating value.', 'error')
+
         return redirect(url_for('view_product', product_id=product.id))
 
-    if rating_form.validate_on_submit():
-        rating = int(request.form['rating'])
-
-        # Update the product's rating and number of ratings
-        update_stmt = update(Product).where(Product.id == product.id).values(
-            rating=((Product.rating * Product.num_ratings) + rating) / (Product.num_ratings + 1),
-            num_ratings=Product.num_ratings + 1
-        )
-        db.session.execute(update_stmt)
-        db.session.commit()
-        flash('Rating submitted successfully!', 'success')
-        return redirect(url_for('view_product', product_id=product.id))
-
-    return render_template('product.html', product=product, form=form, rating_form=rating_form)
+    return render_template('product.html', product=product, form=form, rating_form=rating_form, user_commented=user_commented, user_rated=user_rated)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+    admin_required()
     if request.method == 'POST':
         name = request.form['name']
         price = float(request.form['price'])
@@ -149,20 +184,9 @@ def admin():
     products = Product.query.all()
     return render_template('admin.html', products=products)
 
-@app.route('/store', methods=['GET'])
-def store():
-    search_query = request.args.get('search_query', '')
-    filtered_products = filter_products(search_query)
-    return render_template('store.html', products=filtered_products)
-
-def filter_products(search_query):
-    if search_query:
-        return Product.query.filter(Product.name.ilike(f'%{search_query}%')).all()
-    else:
-        return Product.query.all()
-
 @app.route('/admin/delete/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
+    admin_required()
     product = Product.query.get_or_404(product_id)
     if product.image_path:
         os.remove(os.path.join(app.static_folder, product.image_path))
@@ -172,6 +196,7 @@ def delete_product(product_id):
 
 @app.route('/admin/edit/<int:product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
+    admin_required()
     product = Product.query.get_or_404(product_id)
 
     if request.method == 'POST':
@@ -198,6 +223,18 @@ def edit_product(product_id):
 
     return render_template('edit_product.html', product=product)
 
+@app.route('/store', methods=['GET'])
+def store():
+    search_query = request.args.get('search_query', '')
+    filtered_products = filter_products(search_query)
+    return render_template('store.html', products=filtered_products)
+
+def filter_products(search_query):
+    if search_query:
+        return Product.query.filter(Product.name.ilike(f'%{search_query}%')).all()
+    else:
+        return Product.query.all()
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -214,6 +251,8 @@ def register():
 
         # Create a new user
         user = User(username=username, email=email, password=password)
+        if username.lower() == 'admin':
+            user.is_admin = True
         db.session.add(user)
         db.session.commit()
 
@@ -234,9 +273,10 @@ def login():
         if not user or user.password != password:
             flash('Invalid email or password. Please try again.', 'danger')
             return redirect('/login')
-
+        
         flash('Logged in successfully!', 'success')
         session['username'] = user.username
+        session['is_admin'] = user.is_admin
         return redirect('/')
 
     return render_template('login.html', form=form)
@@ -248,6 +288,45 @@ def logout():
     # Redirect to the home page or any other page after logout
     return redirect(url_for('home'))
 
+@app.route('/add_to_cart/<int:product_id>')
+def add_to_cart(product_id):
+    if 'shopping_cart' not in session:
+        session['shopping_cart'] = {}
+
+    product = Product.query.get(product_id)
+    if product:
+        if product_id in session['shopping_cart']:
+            session['shopping_cart'][product_id]['quantity'] += 1
+        else:
+            session['shopping_cart'][product_id] = {
+                'name': product.name,
+                'price': str(product.price),
+                'quantity': 1
+            }
+    session.modified = True
+    return redirect(url_for('shopping_cart'))
+
+@app.route('/shopping_cart')
+def shopping_cart():
+    total_price = 0
+    for item in session.get('shopping_cart', {}).values():
+        total_price += float(item['price']) * item['quantity']
+    return render_template('shopping_cart.html', shopping_cart=session.get('shopping_cart', {}), total_price=total_price)
+
+@app.route('/delete_from_cart/<int:product_id>')
+def delete_from_cart(product_id):
+    if 'shopping_cart' in session and product_id in session['shopping_cart']:
+        del session['shopping_cart'][product_id]
+    session.modified = True
+    return redirect(url_for('shopping_cart'))
+
+@app.route('/update_cart/<int:product_id>', methods=['POST'])
+def update_cart(product_id):
+    quantity = request.form.get('quantity')
+    if quantity is not None and int(quantity) > 0 and 'shopping_cart' in session and product_id in session['shopping_cart']:
+        session['shopping_cart'][product_id]['quantity'] = int(quantity)
+    session.modified = True
+    return redirect(url_for('shopping_cart'))
 
 if __name__ == '__main__':
     db.create_all()

@@ -3,33 +3,54 @@
 {% block title %}Store{% endblock %}
 
 {% block content %}
-    <!-- Search Bar -->
-    <div class="row mt-4 mb-3">
-        <div class="col-md-6 offset-md-3">
-            <form action="{{ url_for('store') }}" method="GET">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search products" name="search_query">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+<div class="container my-5">
+
+  <!-- Search Bar and Sort Option -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <form class="form-inline" action="{{ url_for('store') }}" method="GET"> 
+      <input class="form-control mr-sm-2" type="search" placeholder="Search products" name="search_query">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    
+    <form action="{{ url_for('store') }}" method="GET"> 
+      <select class="custom-select" name="sort_by" onchange="this.form.submit()">
+        <option selected>Sort by...</option>
+        <option value="rating">Rating</option>
+      </select>
+    </form>
+  </div>
+
+  <div class="row">
+
+    <!-- Filter Categories -->
+    <div class="col-lg-3 mb-4">
+      <div class="list-group">
+        <h5 class="mb-3">Categories</h5>
+        <a href="{{ url_for('store') }}" class="list-group-item list-group-item-action">All</a>
+        {% for category in categories %}
+          <a href="{{ url_for('store', category=category.name) }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+        {% endfor %}
+      </div>
     </div>
 
     <!-- Product Listing -->
-    <div class="row">
+    <div class="col-lg-9">
+      <div class="row">
         {% for product in products %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 d-flex flex-column">
-                    <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top" alt="Product Image">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mt-auto">{{ product.name }}</h5>
-                        <p class="card-text">Price: ${{ product.price }}</p>
-                        <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-primary mt-auto">View Details</a>
-                    </div>
-                </div>
+          <div class="col-md-4 mb-4">
+            <div class="card h-100">
+              <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top" alt="Product Image">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title mt-auto">{{ product.name }}</h5>
+                <p class="card-text">Price: ${{ product.price }}</p>
+                <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-primary mt-auto">View Details</a>
+              </div>
             </div>
+          </div>
         {% endfor %}
+      </div>
     </div>
+
+  </div>
+</div>
 {% endblock %}

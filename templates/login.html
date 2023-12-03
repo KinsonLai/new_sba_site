@@ -3,28 +3,42 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1 class="mb-4">Login</h1>
-                <form method="POST">
-                    {{ form.hidden_tag() }}
-                    <div class="form-group">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </form>
-                {% if not session['username'] %}
-                <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a>.</p>
-                {% endif %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Login</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.username_or_email.label(class="form-label") }}
+                            {{ form.username_or_email(class="form-control") }}
+                            {% for error in form.username_or_email.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control") }}
+                            {% for error in form.password.errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-primary btn-block") }}
+                        </div>
+                    </form>
+                </div>
             </div>
+            {% if not session.get('username') %}
+            <div class="mt-3">
+                <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a>.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}

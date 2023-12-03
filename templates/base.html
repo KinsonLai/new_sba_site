@@ -8,44 +8,26 @@
 
     <!-- Required CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
 
     <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
 
     <!-- FontAwesome for icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Required JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
-    <!-- Custom CSS -->
-    <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
+    <script>
+        function changeLanguage(languageCode) {
+            $.post("/change_language", { 'language_code': languageCode }, function () {
+                location.reload(true);
+            });
         }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.8rem;
-        }
-        .navbar {
-            box-shadow: 0 2px 10px 0 rgba(0,0,0,.05);
-        }
-        .footer {
-            background: #f8f9fa;
-            box-shadow: 0 -2px 10px 0 rgba(0,0,0,.05);
-        }
-        .banner-container {
-            background: #f8f9fa;
-            box-shadow: 0 2px 10px 0 rgba(0,0,0,.05);
-            height: 200px;
-        }
-        @media (min-width: 768px) {
-            .banner-container {
-                height: 300px;
-            }
-        }
-    </style>
+    </script>
 </head>
 
 <body>
@@ -53,7 +35,7 @@
     <div class="container-fluid p-0 bg-light">
         <div class="row justify-content-center align-items-center banner-container">
             <div class="col-12 text-center">
-                <img src="{{url_for('static', filename='logo.gif')}}" alt="logo animation" class="img-fluid">
+                <img src="{{url_for('static', filename='logo.gif')}}" alt="{{ ('logo animation') }}" class="img-fluid">
             </div>
         </div>
     </div>
@@ -62,43 +44,56 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <img src="{{url_for('static', filename='logo.png')}}" alt="logo" class="img-fluid" width="80">
-            <a class="navbar-brand d-none d-lg-inline" href="/">Jaygo's Computer</a>
+            <a class="navbar-brand d-none d-lg-inline" href="/">{{ ('Jaygo\'s Computer') }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="{{ ('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/">{{ ('Home') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/store">Store</a>
+                        <a class="nav-link" href="/store">{{ ('Store') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
+                        <a class="nav-link" href="/about">{{ ('About') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contact">Contact Us</a>
+                        <a class="nav-link" href="/contact">{{ ('Contact Us') }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     {% if username %}
                     <li class="nav-item">
                         <span class="navbar-text username">{{ username }}</span>
-                        <a href="/shopping_cart">
-                            <img src="{{url_for('static', filename='shopping-cart.png')}}" alt="Shopping Cart" height="25">
-                        </a>
-                        <a href="/logout" class="btn btn-outline-primary btn-sm ml-2">Logout</a>
+                        <a href="/logout" class="btn btn-outline-primary btn-sm ml-2">{{ ('Logout') }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shoppingcart"><img src="{{url_for('static', filename='shopping-cart.png')}}" alt="shopping cart" width="30"></a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/login">{{ ('Login') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/register">Register</a>
+                        <a class="nav-link" href="/register">{{ ('Register') }}</a>
                     </li>
+                    
                     {% endif %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ ('Language') }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="languageDropdown">
+                            <a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a>
+                            <a class="dropdown-item" href="#" onclick="changeLanguage('fr')">French</a>
+                            <a class="dropdown-item" href="#" onclick="changeLanguage('ja')">Japanese</a>
+                            <!-- Add more languages as needed -->
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -116,4 +111,5 @@
         </div>
     </footer>
 </body>
+
 </html>

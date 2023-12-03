@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Edit Comment</h3>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {{ comment_form.hidden_tag() }}
+            <div class="form-group">
+              {{ comment_form.comment.label(class="form-control-label") }}
+              {% if comment_form.comment.errors %}
+                {{ comment_form.comment(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in comment_form.comment.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ comment_form.comment(class="form-control form-control-lg") }}
+              {% endif %}
+            </div>
+
+            {{ comment_form.hidden_tag() }}
+            <div class="form-group">
+              {{ comment_form.rating.label(class="form-control-label") }}
+              <div class="rating">
+                {% set rating_value = comment_form.rating.data|int %}
+                {% for i in range(1, 6) %}
+                <div class="star-container">
+                  <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="rating-checkbox" {% if i == rating_value %} checked {% endif %} />
+                  <label for="star{{ i }}"><span class="fa fa-star {% if i <= rating_value %} checked {% endif %}"></span></label>
+                </div>
+                {% endfor %}
+              </div>
+              {% if comment_form.rating.errors %}
+                <div class="invalid-feedback">
+                  {% for error in comment_form.rating.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            {{ comment_form.submit(class="btn btn-primary") }}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add the necessary CSS for the stars -->
+<style>
+  .fa-star {
+    color: grey;
+  }
+
+  .fa-star.checked {
+    color: gold;
+  }
+
+  .rating>div {
+    display: inline-block;
+  }
+
+  .rating>div>input {
+    display: none;
+    /* Hide radio button */
+  }
+
+  .rating>div>label {
+    cursor: pointer;
+    /* Change cursor type */
+    display: inline-block;
+    /* Add this line */
+    width: 20px;
+    /* Add this line */
+  }
+</style>
+
+<!-- Add the necessary JavaScript for the stars -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var stars = document.querySelectorAll('.star-container');
+    stars.forEach(function (star, index) {
+      star.addEventListener('mouseover', function (e) {
+        for (i = 0; i <= index; i++) {
+          stars[i].querySelector('.fa-star').classList.add('checked');
+        }
+      });
+
+      star.addEventListener('mouseout', function (e) {
+        stars.forEach(function (star) {
+          if (!star.querySelector('.fa-star').hasAttribute('clicked')) {
+            star.querySelector('.fa-star').classList.remove('checked');
+          }
+        });
+      });
+
+      star.addEventListener('click', function (e) {
+        for (i = 0; i < stars.length; i++) {
+          // remove the clicked attribute from all stars
+          stars[i].querySelector('.fa-star').removeAttribute('clicked');
+          stars[i].querySelector('.fa-star').classList.remove('checked');
+          // uncheck all radio inputs
+          stars[i].querySelector('.rating-checkbox').checked = false;
+        }
+        for (i = 0; i <= index; i++) {
+          // add the clicked attribute to the clicked stars
+          stars[i].querySelector('.fa-star').setAttribute('clicked', '');
+          stars[i].querySelector('.fa-star').classList.add('checked');
+          // check the clicked radio input
+          stars[i].querySelector('.rating-checkbox').checked = true;
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Page{% endblock %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h2 class="text-center my-4">Payment & Shipping Details</h2>
+
+            <h4 class="my-4">Order Summary</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th> <!-- Add a new column for Quantity -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.quantity }}</td> <!-- Display the quantity -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p><strong>Total: {{ total_price }}</strong></p>
+
+            <form>
+                <h4 class="my-4">Customer Information</h4>
+                <div class="form-group">
+                    <label for="customerName">Name</label>
+                    <input type="text" class="form-control" id="customerName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Email</label>
+                    <input type="email" class="form-control" id="customerEmail" placeholder="john@example.com" required>
+                </div>
+
+                <h4 class="my-4">Shipping Information</h4>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" placeholder="123 St, City, Country" required>
+                </div>
+
+                <h4 class="my-4">Payment Details</h4>
+                <div class="form-group">
+                    <label for="cardName">Name on Card</label>
+                    <input type="text" class="form-control" id="cardName" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" pattern="\d{4} \d{4} \d{4} \d{4}" maxlength="19" required>
+                </div>
+            
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="expiryDate">Expiry Date</label>
+                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" pattern="(0[1-9]|1[0-2])\/\d{2}" maxlength="5" required>
+                    </div>
+            
+                    <div class="form-group col-md-6">
+                        <label for="cvv">CVV</label>
+                        <input type="text" class="form-control" id="cvv" placeholder="123" pattern="\d{3}" maxlength="3" required>
+                    </div>
+                </div>
+                <a href="/success" class="btn btn-primary btn-block">Pay Now</button>
+                    <a href="{{ url_for('shoppingcart') }}" class="btn btn-secondary btn-block">Back to Cart</a>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#expiryDate').on('keyup', function() {
+            var val = $(this).val();
+            if (val.length === 2) {
+                $(this).val(val + '/');
+            }
+        });
+    });
+    </script>
+{% endblock %}

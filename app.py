@@ -8,7 +8,7 @@ import os
 import uuid
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, NumberRange, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 from datetime import datetime
 from googletrans import Translator
 
@@ -511,4 +511,4 @@ def clear_cart():
 
 if __name__ == '__main__':
     db.create_all()
-    app.run()
+    app.run(debug=False, host='0.0.0.0')

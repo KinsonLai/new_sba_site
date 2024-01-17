@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user, LoginManager, login_required, login_user, UserMixin
 from sqlalchemy import or_, desc
@@ -11,6 +11,13 @@ from wtforms import StringField, PasswordField, SubmitField, IntegerField, TextA
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 from datetime import datetime
 from googletrans import Translator
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+import string
+
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -20,6 +27,38 @@ app.secret_key = 'aSecrETkEy'
 login_manager = LoginManager()
 login_manager.init_app(app)
 db = SQLAlchemy(app)
+
+synonyms = {
+    'founder': ['creator', 'owner', 'founder'],
+    'sell': ['offer', 'sell', 'have', 'stock', 'supply'],
+    'payment': ['payment', 'pay', 'credit', 'transaction'],
+    'delivery': ['shipping', 'delivery', 'dispatch', 'mail'],
+    'fee': ['charge', 'cost', 'fee', 'price'],
+}
+
+# Define a function to process the input and find the best response
+def generate_response(message):
+    # Tokenize and lower the case of the message
+    words = word_tokenize(message.lower())
+    
+    # Remove stopwords and punctuation
+    words = [word for word in words if word not in stopwords.words('english') and word not in string.punctuation]
+
+    # Check each word in the message for our keywords and respond accordingly
+    for word in words:
+        if word in synonyms['founder']:
+            return "Our shop was founded by Jaygo."
+        elif word in synonyms['sell']:
+            return "We sell computers and electronic gadgets."
+        elif word in synonyms['payment']:
+            return "You can pay using credit card, Alipay, or Octopus Card."
+        elif word in synonyms['delivery']:
+            return "Your order will be delivered in 3 business days."
+        elif word in synonyms['fee']:
+            return "No delivery fee is needed, shipping is free!"
+    
+    # Default response if no keywords are found
+    return "Sorry, I'm not sure how to answer that. Can you ask something else?"
 
 def translate_text(text, target_language):
     translator = Translator()
@@ -504,10 +543,26 @@ def payment():
 def success():
     return render_template('success.html')
 
+@app.route('/support')
+def support():
+    return render_template('support.html')
+
+@app.route('/support_submitted')
+def support_submitted():
+    return render_template('support_submitted.html')
+
 @app.route('/clear_cart', methods=['POST'])
 def clear_cart():
     session['shoppingcart'] = {}
     return redirect(url_for('store'))
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json  # Get JSON data from the request
+    message = data.get('message', '')  # Extract the 'message' value from the JSON
+    response = generate_response(message)  # Generate a response using the function defined above
+    return jsonify({'response': response})  # Return the response as JSON
+
 
 if __name__ == '__main__':
     db.create_all()

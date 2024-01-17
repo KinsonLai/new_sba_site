@@ -3,19 +3,81 @@
 {% block title %}About Us{% endblock %}
 
 {% block content %}
-<div class="container">
-  <h1 class="my-4">About Us</h1>
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/6CJyhR-obmw?si=doEHMdiFLx7TYBFo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="mx-auto"></iframe>
-  <p>Welcome to Jaygo's Computer, your number one source for all things computer-related. We're dedicated to giving you the very best of computers, with a focus on quality, reliability, and customer service.</p>
+<div class="container py-5">
+  <h1 class="text-center display-4 mb-5">About Us</h1>
   
-  <p>Founded in 2023 by Jaygo, Jaygo's Computer has come a long way from its beginnings. When Jaygo first started out, his passion for cutting-edge computing technology drove him to start his own business.</p>
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+      <!-- Card for video with shadow for added depth -->
+      <div class="card shadow mb-4">
+        <div class="card-body p-0">
+          <!-- Responsive video embed using Bootstrap 4 embed-responsive classes -->
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/6CJyhR-obmw?autoplay=1&mute=1" title="YouTube video player" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <p>We now serve customers all over the world, and are thrilled that we're able to turn our passion into our own website.</p>
+  <div class="container py-5">
+    <!-- Products Section -->
+    <section class="pt-5">
+      <h2 class="text-center mb-4">Our Products</h2>
+      <div class="row">
+        <!-- Laptop Product Card -->
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img class="card-img-top" style="width: 60%; margin: 0 auto; display: block;" src="{{url_for('static', filename='laptop.png')}}" alt="Laptop">
+            <div class="card-body">
+              <h5 class="card-title">Laptops</h5>
+              <p class="card-text">Explore our latest range of high-performance laptops suitable for all your needs.</p>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Desktop Product Card -->
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img class="card-img-top" style="width: 60%; margin: 0 auto; display: block;" src="{{url_for('static', filename='desktop-computer.png')}}" alt="Desktop">
+            <div class="card-body">
+              <h5 class="card-title">Desktops</h5>
+              <p class="card-text">Discover our collection of powerful desktops for gaming, work, and home use.</p>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Accessories Product Card -->
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img class="card-img-top" style="width: 60%; margin: 0 auto; display: block;" src="{{url_for('static', filename='listen.png')}}" alt="Accessories">
+            <div class="card-body">
+              <h5 class="card-title">Gadgets</h5>
+              <p class="card-text">Find the perfect gadgets, from mice and keyboards to bags and cables to headphones and microphones.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-  <p>We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don't hesitate to contact us.</p>
+  <!-- Card with shadow for text content -->
+  <div class="card border-0 shadow">
+    <div class="card-title"><h3 style="text-align: center;">Letter from the founder</h3></div>
+    <div class="card-body">
+      <p>Welcome to <strong>Jaygo's Computer</strong>, your number one source for all things computer-related. We're dedicated to giving you the very best of computers, with a focus on quality, reliability, and customer service.</p>
+      
+      <p>Founded in 2023 by Jaygo, Jaygo's Computer has come a long way from its beginnings. When Jaygo first started out, his passion for cutting-edge computing technology drove him to start his own business.</p>
 
-  <p>Sincerely,</p>
+      <p>We now serve customers all over the world, and are thrilled that we're able to turn our passion into our own website.</p>
 
-  <p>Jaygo</p>
+      <p>We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don't hesitate to <a href="contact.html">contact us</a>.</p>
+
+      <div class="mt-4 text-left">
+        <p class="font-italic">Sincerely,</p>
+        <p class="font-weight-bold">Jaygo</p>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

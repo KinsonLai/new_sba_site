@@ -20,6 +20,7 @@
     <!-- Required JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <script>
         function changeLanguage(languageCode) {
@@ -28,6 +29,94 @@
             });
         }
     </script>
+
+    <style>
+        /* Chatbot Button Style */
+        #chatbot-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            cursor: pointer;
+        }
+
+        /* Chatbot Interface Style */
+        #chatbot-interface {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            width: 350px;
+            height: 400px;
+            z-index: 99;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, .1);
+            overflow: hidden;
+        }
+
+        .ui-widget-content {
+            border: none;
+            background: none;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            cursor: move;
+            /* Draggable area */
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .chat-input {
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        .chat-input textarea {
+            width: calc(100% - 80px);
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            width: 60px;
+        }
+
+        .chatbot-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+    </style>
 </head>
 
 <body>
@@ -63,6 +152,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">{{ ('Contact Us') }}</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/support">{{ ('Support') }}</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     {% if username %}
@@ -71,7 +163,9 @@
                         <a href="/logout" class="btn btn-outline-primary btn-sm ml-2">{{ ('Logout') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/shoppingcart"><img src="{{url_for('static', filename='shopping-cart.png')}}" alt="shopping cart" width="30"></a>
+                        <a class="nav-link" href="/shoppingcart"><img
+                                src="{{url_for('static', filename='shopping-cart.png')}}" alt="shopping cart"
+                                width="30"></a>
                     </li>
                     {% else %}
                     <li class="nav-item">
@@ -80,7 +174,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/register">{{ ('Register') }}</a>
                     </li>
-                    
+
                     {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
@@ -103,6 +197,68 @@
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
+
+
+    <!-- The button to open the chatbot -->
+    <button id="chatbot-button" class="btn btn-primary chatbot-button">
+        Chat with us!
+    </button>
+    <div id="chatbot-window" class="chat-window">
+        
+        <div class="chat-box" id="chat-box">
+            <!-- Chat messages will be displayed here -->
+        </div>
+        <div class="chat-input">
+            <textarea id="user-input" rows="3" placeholder="Type your message here..."></textarea>
+            <button id="send-btn" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            // Make the chat window draggable
+            $('#chatbot-window').draggable({
+                handle: '#chatbot-header'
+            });
+
+            // Toggle chat window on button click
+            $('#chatbot-button').click(function () {
+                $('#chatbot-window').show();
+            });
+
+            // Close chat window
+            $('#close-chat').click(function () {
+                $('#chatbot-window').hide();
+            });
+
+            // Send button click handler
+            $('#send-btn').click(function () {
+                // Get user input
+                var userInput = $('#user-input').val();
+
+                // Clear the input field for the next message
+                $('#user-input').val('');
+
+                // Append the user's message to the chat interface
+                appendMessage('You', 'user-message', userInput);
+
+                // TODO: Implement AJAX POST request to your chat server
+                // Sending the user's message to the Flask server using AJAX POST request
+                $.post('/chat', { message: userInput }, function (response) {
+                    // When the server responds, append the message to the chat interface
+                    appendMessage('Bot', 'bot-message', response.response);
+                }).fail(function () {
+                    // In case of failure (e.g., server error or no network), show an error
+                    appendMessage('Bot', 'bot-message', 'Sorry, there was an error processing your message.');
+                });
+            });
+
+            function appendMessage(sender, cssClass, message) {
+                var messageElement = $('<div class="chat-message ' + cssClass + '"><strong>' + sender + ':</strong> ' + message + '</div>');
+                $('#chat-box').append(messageElement);
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+            }
+        });
+    </script>
 
     <!-- Footer -->
     <footer class="footer mt-auto py-3">

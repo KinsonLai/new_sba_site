@@ -14,33 +14,48 @@
                     <form method="POST">
                         {{ form.hidden_tag() }}
                         <div class="form-group">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-control" id="gender">
+                                <option value="">Select...</option>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                                <option value="non-binary">Non-binary/Third gender</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob" name="dob">
+                        </div>
+                        <div class="form-group">
                             {{ form.username.label(class="form-label") }}
                             {{ form.username(class="form-control") }}
                             {% for error in form.username.errors %}
-                                <div class="alert alert-danger">{{ error }}</div>
+                            <div class="alert alert-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-group">
                             {{ form.email.label(class="form-label") }}
                             {{ form.email(class="form-control") }}
                             {% for error in form.email.errors %}
-                                <div class="alert alert-danger">{{ error }}</div>
+                            <div class="alert alert-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-group">
                             {{ form.password.label(class="form-label") }}
                             {{ form.password(class="form-control") }}
                             {% for error in form.password.errors %}
-                                <div class="alert alert-danger">{{ error }}</div>
+                            <div class="alert alert-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-group">
                             {{ form.confirm_password.label(class="form-label") }}
                             {{ form.confirm_password(class="form-control") }}
                             {% for error in form.confirm_password.errors %}
-                                <div class="alert alert-danger">{{ error }}</div>
+                            <div class="alert alert-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
+
                         <div class="form-group">
                             {{ form.submit(class="btn btn-primary btn-block") }}
                         </div>

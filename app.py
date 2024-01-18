@@ -422,12 +422,20 @@ def edit_product(product_id):
 
 @app.route('/store', methods=['GET'])
 def store():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 9, type=int)  # Define items per page as you wish
     search_query = request.args.get('search_query', '')
     category = request.args.get('category', '')
     sort_by = request.args.get('sort_by', '')
-    filtered_products = filter_products(search_query, category, sort_by)
+
+    # Modify your filter_products function to return a query instead of list of products
+    query = filter_products(search_query, category, sort_by)
+
+    # Add pagination to your query
+    paginated_products = query.paginate(page=page, per_page=per_page, error_out=False)
+
     categories = Categories.query.all()
-    return render_template('store.html', products=filtered_products, categories=categories)
+    return render_template('store.html', products=paginated_products, categories=categories, sort_by=sort_by)
 
 def filter_products(search_query, category, sort_by):
     query = Product.query
@@ -436,12 +444,16 @@ def filter_products(search_query, category, sort_by):
         query = query.filter(Product.name.ilike(f'%{search_query}%'))
 
     if category:
-        query = query.filter(Product.category == str(category))
+        query = query.filter(Product.category == str(category))  # Make sure this line is correctly filtering by category
 
     if sort_by == 'rating':
         query = query.order_by(desc(Product.rating))
+    
+    if sort_by == 'price desc':
+        query = query.order_by(desc(Product.price))
 
-    return query.all()
+    # Just return the query object, not the executed query
+    return query
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -572,6 +584,9 @@ def chat():
     response = generate_response(message)  # Generate a response using the function defined above
     return jsonify({'response': response})  # Return the response as JSON
 
+@app.route('/chatbot')
+def chatbot():
+    return render_template('chatbot.html')
 
 if __name__ == '__main__':
     db.create_all()

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container py-5">
   <h1 class="text-center display-4 mb-5">About Us</h1>
-  
+
   <div class="row justify-content-center mb-5">
     <div class="col-lg-8">
       <!-- Card for video with shadow for added depth -->
@@ -13,7 +13,9 @@
         <div class="card-body p-0">
           <!-- Responsive video embed using Bootstrap 4 embed-responsive classes -->
           <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/6CJyhR-obmw?autoplay=1&mute=1" title="YouTube video player" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/6CJyhR-obmw?autoplay=1&mute=1"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
         </div>
       </div>
@@ -27,33 +29,37 @@
       <div class="row">
         <!-- Laptop Product Card -->
         <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <img class="card-img-top" style="width: 60%; margin: 0 auto; display: block;" src="{{url_for('static', filename='laptop.png')}}" alt="Laptop">
+          <div class="card h-100 shadow-sm">
+            <img class="card-img-top p-4" style="object-fit: contain; height: 250px;"
+              src="{{url_for('static', filename='laptop.png')}}" alt="Laptop">
             <div class="card-body">
-              <h5 class="card-title">Laptops</h5>
+              <h5 class="card-title text-center">Laptops</h5>
               <p class="card-text">Explore our latest range of high-performance laptops suitable for all your needs.</p>
             </div>
           </div>
         </div>
-  
+
         <!-- Desktop Product Card -->
         <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <img class="card-img-top" style="width: 60%; margin: 0 auto; display: block;" src="{{url_for('static', filename='desktop-computer.png')}}" alt="Desktop">
+          <div class="card h-100 shadow-sm">
+            <img class="card-img-top p-4" style="object-fit: contain; height: 250px;"
+              src="{{url_for('static', filename='desktop-computer.png')}}" alt="Desktop">
             <div class="card-body">
-              <h5 class="card-title">Desktops</h5>
+              <h5 class="card-title text-center">Desktops</h5>
               <p class="card-text">Discover our collection of powerful desktops for gaming, work, and home use.</p>
             </div>
           </div>
         </div>
-  
+
         <!-- Accessories Product Card -->
         <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <img class="card-img-top" style="width: 60%; margin: 0 auto; display: block;" src="{{url_for('static', filename='listen.png')}}" alt="Accessories">
+          <div class="card h-100 shadow-sm">
+            <img class="card-img-top p-4" style="object-fit: contain; height: 250px;"
+              src="{{url_for('static', filename='listen.png')}}" alt="Accessories">
             <div class="card-body">
-              <h5 class="card-title">Gadgets</h5>
-              <p class="card-text">Find the perfect gadgets, from mice and keyboards to bags and cables to headphones and microphones.</p>
+              <h5 class="card-title text-center">Gadgets</h5>
+              <p class="card-text">Find the perfect gadgets, from mice and keyboards to bags and cables to headphones
+                and microphones.</p>
             </div>
           </div>
         </div>
@@ -63,19 +69,102 @@
 
   <!-- Card with shadow for text content -->
   <div class="card border-0 shadow">
-    <div class="card-title"><h3 style="text-align: center;">Letter from the founder</h3></div>
+    <div class="card-title">
+      <h3 style="text-align: center;">Letter from the founder</h3>
+    </div>
     <div class="card-body">
-      <p>Welcome to <strong>Jaygo's Computer</strong>, your number one source for all things computer-related. We're dedicated to giving you the very best of computers, with a focus on quality, reliability, and customer service.</p>
-      
-      <p>Founded in 2023 by Jaygo, Jaygo's Computer has come a long way from its beginnings. When Jaygo first started out, his passion for cutting-edge computing technology drove him to start his own business.</p>
+      <p>Welcome to <strong>Jaygo's Computer</strong>, your number one source for all things computer-related. We're
+        dedicated to giving you the very best of computers, with a focus on quality, reliability, and customer service.
+      </p>
 
-      <p>We now serve customers all over the world, and are thrilled that we're able to turn our passion into our own website.</p>
+      <p>Founded in 2023 by Jaygo, Jaygo's Computer has come a long way from its beginnings. When Jaygo first started
+        out, his passion for cutting-edge computing technology drove him to start his own business.</p>
 
-      <p>We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don't hesitate to <a href="contact.html">contact us</a>.</p>
+      <p>We now serve customers all over the world, and are thrilled that we're able to turn our passion into our own
+        website.</p>
+
+      <p>We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments,
+        please don't hesitate to <a href="contact.html">contact us</a>.</p>
 
       <div class="mt-4 text-left">
         <p class="font-italic">Sincerely,</p>
         <p class="font-weight-bold">Jaygo</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Terms of Service</h1>
+      </div>
+      <div class="card-body">
+        <h2 class="h5">1. Acceptance of Terms</h2>
+        <p>Welcome to Jaygo Computer ("Company", "we", "our", "us"). These Terms of Service ("Terms", "Terms of
+          Service") govern your use of our website located at <a
+            href="http://www.jaygocomputer.com">www.jaygocomputer.com</a> (the "Service") operated by Jaygo Computer.
+          Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms.
+          By accessing or using the Service, you agree to be bound by these Terms.</p>
+
+        <h2 class="h5">2. Privacy Policy</h2>
+        <p>Please refer to our <a href="#">Privacy Policy</a> for information about how we collect, use, and share your
+          personal information.</p>
+
+        <h2 class="h5">3. Account</h2>
+        <p>When you create an account with us, you guarantee that the information you provide us is accurate, complete,
+          and current at all times. Inaccurate, incomplete, or obsolete information may result in the immediate
+          termination of your account on our Service.</p>
+
+        <h2 class="h5 card-title">4. Products or Services</h2>
+        <p class="card-text">Our products or services are available exclusively online through the website. These
+          products or services may have limited quantities and are subject to return or exchange only according to our
+          Return Policy.</p>
+
+        <h2 class="h5 card-title">5. Modifications to the Service and Prices</h2>
+        <p class="card-text">Prices for our products are subject to change without notice. We reserve the right at any
+          time to modify or discontinue the Service (or any part or content thereof) without notice at any time.</p>
+
+        <h2 class="h5 card-title">6. Accuracy of Billing and Account Information</h2>
+        <p class="card-text">We reserve the right to refuse any order you place with us. We may, in our sole discretion,
+          limit or cancel quantities purchased per person, per household or per order.</p>
+
+        <h2 class="h5 card-title">7. Optional Tools</h2>
+        <p class="card-text">We may provide you with access to third-party tools over which we neither monitor nor have
+          any control nor input.</p>
+
+        <h2 class="h5 card-title">8. Third-Party Links</h2>
+        <p class="card-text">Certain content, products and services available via our Service may include materials from
+          third-parties.</p>
+
+        <h2 class="h5 card-title">9. User Comments, Feedback and Other Submissions</h2>
+        <p class="card-text">If at our request you send certain specific submissions or without a request from us you
+          send creative ideas, suggestions, proposals, plans, or other materials, whether online, by email, by postal
+          mail, or otherwise, you agree that we may, at any time, without restriction, edit, copy, publish, distribute,
+          translate and otherwise use in any medium any comments that you forward to us.</p>
+
+        <h2 class="h5 card-title">10. Personal Information</h2>
+        <p class="card-text">Your submission of personal information through the store is governed by our Privacy
+          Policy. Please view our Privacy Policy.</p>
+
+        <h2 class="h5 card-title">11. Errors, Inaccuracies and Omissions</h2>
+        <p class="card-text">Occasionally there may be information on our site or in the Service that contains
+          typographical errors, inaccuracies or omissions that may relate to product descriptions, pricing, promotions,
+          offers, product shipping charges, transit times and availability.</p>
+
+        <h2 class="h5 card-title">12. Prohibited Uses</h2>
+        <p class="card-text">In addition to other prohibitions as set forth in the Terms of Service, you are prohibited
+          from using the site or its content for any unlawful purpose, to solicit others to perform or participate in
+          any unlawful acts, to violate any international, federal, provincial or state regulations, rules, laws, or
+          local ordinances, to infringe upon or violate our intellectual property rights or the intellectual property
+          rights of others, to harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate
+          based on gender, sexual orientation, religion, ethnicity, race, age, national origin, or disability, to submit
+          false or misleading information, to upload or transmit viruses or any other type of malicious code that will
+          or may be used in any way that will affect the functionality or operation of the Service or of any related
+          website, other websites, or the Internet, to collect or track the personal information of others, to spam,
+          phish, pharm, pretext, spider, crawl, or scrape, for any obscene or immoral purpose, or to interfere with or
+          circumvent the security features of the Service or any related website, other websites, or the Internet. We
+          reserve the right to terminate your use of the Service or any related website for violating any of the
+          prohibited uses.</p>
       </div>
     </div>
   </div>

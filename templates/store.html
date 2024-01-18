@@ -7,18 +7,27 @@
 
   <!-- Search Bar and Sort Option -->
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <form class="form-inline" action="{{ url_for('store') }}" method="GET"> 
+    <form class="form-inline" action="{{ url_for('store') }}" method="GET">
       <input class="form-control mr-sm-2" type="search" placeholder="Search products" name="search_query">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
-    
-    <form action="{{ url_for('store') }}" method="GET"> 
-      <select class="custom-select" name="sort_by" onchange="this.form.submit()">
-        <option selected>Sort by...</option>
-        <option value="rating">Rating</option>
-      </select>
+
+    <form id="sortingForm" action="/store" method="GET" style="display: flex; align-items: center;">
+      <div style="display: flex; align-items: center;">
+        <select class="custom-select" name="sort_by" onchange="this.form.submit()" style="margin-right: 5px;">
+          <option value="" {% if not sort_by %}selected{% endif %} disabled>Sort by...</option>
+          <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Rating</option>
+          <option value="price desc" {% if sort_by == 'price desc' %}selected{% endif %}>Price desc</option>
+        </select>
+        
+        <button type="button" id="clearSortingButton" onclick="clearSorting()" class="clear-sorting-button">
+          <i class="fas fa-times-circle"></i>
+        </button>
+      </div>
     </form>
   </div>
+
+
 
   <div class="row">
 
@@ -28,7 +37,8 @@
         <h5 class="mb-3">Categories</h5>
         <a href="{{ url_for('store') }}" class="list-group-item list-group-item-action">All</a>
         {% for category in categories %}
-          <a href="{{ url_for('store', category=category.name) }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+        <a href="{{ url_for('store', category=category.name) }}" class="list-group-item list-group-item-action">{{
+          category.name }}</a>
         {% endfor %}
       </div>
     </div>
@@ -37,20 +47,55 @@
     <div class="col-lg-9">
       <div class="row">
         {% for product in products %}
-          <div class="col-md-4 mb-4">
-            <div class="card h-100">
-              <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top" alt="Product Image">
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title mt-auto">{{ product.name }}</h5>
-                <p class="card-text">Price: ${{ product.price }}</p>
-                <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-primary mt-auto">View Details</a>
-              </div>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top" alt="Product Image">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title mt-auto">{{ product.name }}</h5>
+              <p class="card-text">Price: ${{ product.price }}</p>
+              <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-primary mt-auto">View
+                Details</a>
             </div>
           </div>
+        </div>
         {% endfor %}
       </div>
     </div>
 
+
+
+  </div>
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item {% if products.page == 1 %}disabled{% endif %}">
+          <a class="page-link" href="{{ url_for('store', page=products.prev_num) }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        <li class="page-item {% if page_num == products.page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('store', page=page_num) }}">{{ page_num }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item {% if products.page == products.pages %}disabled{% endif %}">
+          <a class="page-link" href="{{ url_for('store', page=products.next_num) }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </div>
+
+<script>
+  function clearSorting() {
+    // Reset the sort_by select to its default state
+    document.querySelector('select[name="sort_by"]').value = '';
+    
+    // Submit the form to refresh the page with the default sorting
+    document.getElementById('sortingForm').submit();
+  }
+</script>
 {% endblock %}

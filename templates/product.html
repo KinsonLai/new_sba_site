@@ -17,16 +17,12 @@
 
   .rating>div>input {
     display: none;
-    /* Hide radio button */
   }
 
   .rating>div>label {
     cursor: pointer;
-    /* Change cursor type */
     display: inline-block;
-    /* Add this line */
     width: 20px;
-    /* Add this line */
   }
 </style>
 
@@ -40,12 +36,6 @@
       <p>{{ product.description }}</p>
       <p>Price: ${{ product.price }}</p>
       <p>Rating: {{ product.rating|round }}</p>
-      {% if product.latest_product %}
-      <p>This is a latest product.</p>
-      {% endif %}
-      {% if product.popular_product %}
-      <p>This is a popular product.</p>
-      {% endif %}
       <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
     </div>
   </div>

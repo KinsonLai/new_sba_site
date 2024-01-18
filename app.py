@@ -30,10 +30,13 @@ db = SQLAlchemy(app)
 
 synonyms = {
     'founder': ['creator', 'owner', 'founder'],
-    'sell': ['offer', 'sell', 'have', 'stock', 'supply'],
+    'sell': ['offer', 'sell', 'have', 'stock', 'supply', 'product'],
     'payment': ['payment', 'pay', 'credit', 'transaction'],
     'delivery': ['shipping', 'delivery', 'dispatch', 'mail'],
     'fee': ['charge', 'cost', 'fee', 'price'],
+    'greeting': ['hi', 'hello', 'hey'],
+    'thanks': ['thank', 'thanks', 'appreciate', 'grateful'],
+    'farewell': ['bye', 'goodbye', 'see you']
 }
 
 # Define a function to process the input and find the best response
@@ -56,7 +59,13 @@ def generate_response(message):
             return "Your order will be delivered in 3 business days."
         elif word in synonyms['fee']:
             return "No delivery fee is needed, shipping is free!"
-    
+        elif word in synonyms['greeting']:
+            return "Hello! How can I assist you today?"
+        elif word in synonyms['thanks']:
+            return "You're welcome! Let us know if there's anything else we can help with."
+        elif word in synonyms['farewell']:
+            return "Goodbye! Have a great day!"
+
     # Default response if no keywords are found
     return "Sorry, I'm not sure how to answer that. Can you ask something else?"
 

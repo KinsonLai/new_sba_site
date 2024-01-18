@@ -56,7 +56,10 @@
             background-color: white;
             border-radius: 15px;
             box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
-            display: none; /* Initially hidden */
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            /* Delay hiding visibility */
         }
 
         #chatbotHeader {
@@ -72,6 +75,45 @@
             margin: 10px;
             background-color: #f1f1f1;
             border-radius: 5px;
+        }
+
+        #chatbody {
+            /* Add your preferred styling for the chat container */
+            padding: 10px;
+            height: 400px;
+            /* Or any other height */
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            /* Prevent messages from becoming too wide */
+            padding: 5px 10px;
+            /* Adjust padding as needed */
+            border-radius: 15px;
+            /* Rounded corners for chat bubbles */
+            margin-bottom: 8px;
+            /* Space between messages */
+            display: inline-block;
+            /* Allow the size to fit the content */
+        }
+
+        .user-message {
+            background-color: #dcf8c6;
+            text-align: right;
+            float: right;
+            /* Align to the right */
+            clear: both;
+            /* Start on a new line */
+        }
+
+        .bot-message {
+            background-color: #f1f1f1;
+            text-align: left;
+            float: left;
+            /* Align to the left */
+            clear: both;
+            /* Start on a new line */
         }
     </style>
 </head>
@@ -167,27 +209,101 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="card-body">
+            <div class="card-body" id="chatbody">
                 <!-- Chat messages go here -->
                 <div class="chatbot-message">Welcome! How can we help you today?</div>
                 <!-- Add more messages as needed -->
             </div>
             <div class="card-footer">
-                <input type="text" class="form-control" placeholder="Type a message...">
+                <input type="text" id="userMessage" class="form-control" placeholder="Type a message...">
+                <button id="sendMessage" class="btn btn-primary btn-block mt-2">Send</button>
             </div>
         </div>
     </div>
 
     <!-- Chatbot Toggle Script -->
     <script>
-        document.getElementById('chatbotButton').addEventListener('click', function() {
+        document.getElementById('chatbotButton').addEventListener('click', function () {
             toggleChatbot();
         });
 
         function toggleChatbot() {
             var chatbotInterface = document.getElementById('chatbotInterface');
-            chatbotInterface.style.display = chatbotInterface.style.display === 'none' ? 'block' : 'none';
+
+            if (chatbotInterface.style.opacity === "1") {
+                // Fade out the chatbot interface
+                chatbotInterface.style.opacity = "0";
+                // Wait for the transition to finish before hiding the interface
+                setTimeout(function () {
+                    chatbotInterface.style.visibility = "hidden";
+                }, 500); // This timeout duration should match the transition duration
+            } else {
+                // Show the chatbot interface
+                chatbotInterface.style.visibility = "visible";
+                chatbotInterface.style.opacity = "1";
+                chatbotInterface.style.display = "block";
+            }
         }
+        $(document).ready(function () {
+            $('#sendMessage').click(function () {
+                sendMessage();
+            });
+
+            $('#userMessage').on('keypress', function (e) {
+                if (e.which === 13) { // Enter key pressed
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                var userMessage = $('#userMessage').val().trim();
+                if (userMessage !== '') {
+                    var chatbody = $('#chatbody');
+
+                    // Append user's message to the chat window
+                    chatbody.append('<div class="chat-message user-message">' + userMessage + '</div>');
+
+                    // Clear input field
+                    $('#userMessage').val('');
+
+                    // AJAX POST request to send message to backend
+                    $.ajax({
+                        url: '/chat',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ 'message': userMessage }),
+                        success: function (response) {
+                            // Ensure you are extracting the message text correctly from the response object
+                            var botMessage = response.response || "I didn't understand that."; // default message if response is not structured as expected
+
+                            // Append bot's response to the chat window
+                            chatbody.append('<div class="chat-message bot-message">' + botMessage + '</div>');
+
+                            // Keep the chat window scrolled to the bottom
+                            chatbody.scrollTop(chatbody.prop("scrollHeight"));
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error scenario
+                            chatbody.append('<div class="chat-message bot-message">Error: ' + error + '</div>');
+                            chatbody.scrollTop(chatbody.prop("scrollHeight"));
+                        }
+                    });
+                }
+            }
+
+            function toggleChatbot() {
+                var chatbotInterface = $('#chatbotInterface');
+                chatbotInterface.toggle();
+            }
+
+            // Attach the toggle function to the button
+            $('#chatbotButton').click(toggleChatbot);
+        });
+        // When sending a user message
+        $('#chatbody').append('<div class="chat-message user-message">' + message + '</div>');
+
+        // When receiving a bot response
+        $('#chatbody').append('<div class="chat-message bot-message">' + response + '</div>');
     </script>
     <!-- Footer -->
     <footer class="footer mt-auto py-3">

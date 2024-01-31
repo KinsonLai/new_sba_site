@@ -9,15 +9,19 @@
     <div id="latest-products-carousel" class="carousel slide" data-ride="carousel" style="background-color: gray;">
         <ol class="carousel-indicators">
             {% for product in latest_products %}
-            <li data-target="#latest-products-carousel" data-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %}></li>
+            <li data-target="#latest-products-carousel" data-slide-to="{{ loop.index0 }}" {% if loop.first
+                %}class="active" {% endif %}></li>
             {% endfor %}
         </ol>
         <div class="carousel-inner">
             {% for product in latest_products %}
             <div class="carousel-item {% if loop.first %}active{% endif %}">
-                <a href="{{ url_for('view_product', product_id=product.id) }}"><img src="{{ url_for('static', filename=product.image_path) }}" class="d-block mx-auto" style="max-height:400px; width:auto;" alt="{{ product.name }}"></a>
+                <a href="{{ url_for('view_product', product_id=product.id) }}"><img
+                        src="{{ url_for('static', filename=product.image_path) }}" class="d-block mx-auto"
+                        style="max-height:400px; width:auto;" alt="{{ product.name }}"></a>
                 <div class="carousel-caption d-none d-md-block">
-                    <h5><span class="px-2 px-sm-3 px-md-4 px-lg-5 px-xl-6" style="color: white; background-color: rgb(128,128,128,0.5);">{{ product.name }}</span></h5>
+                    <h5><span class="px-2 px-sm-3 px-md-4 px-lg-5 px-xl-6"
+                            style="color: white; background-color: rgb(128,128,128,0.5);">{{ product.name }}</span></h5>
                     <p class="badge badge-dark" style="font-size: 1rem;">$ {{ product.price }}</p>
                 </div>
             </div>
@@ -44,7 +48,8 @@
         {% for product in popular_products %}
         <div class="col-md-3 mb-4">
             <div class="card h-100 border-0 shadow">
-                <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top" style="max-height:200px; width:auto;" alt="{{ product.name }}">
+                <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top"
+                    style="max-height:200px; width:auto;" alt="{{ product.name }}">
                 <div class="card-body">
                     <h5 class="card-title text-dark">{{ product.name }}</h5>
                     <p class="card-text"><span class="badge badge-dark">$ {{ product.price }}</span></p>

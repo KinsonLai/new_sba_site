@@ -16,10 +16,10 @@
       <div style="display: flex; align-items: center;">
         <select class="custom-select" name="sort_by" onchange="this.form.submit()" style="margin-right: 5px;">
           <option value="" {% if not sort_by %}selected{% endif %} disabled>Sort by...</option>
-          <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Rating</option>
-          <option value="price desc" {% if sort_by == 'price desc' %}selected{% endif %}>Price desc</option>
+          <option value="rating" {% if sort_by=='rating' %}selected{% endif %}>Rating</option>
+          <option value="price desc" {% if sort_by=='price desc' %}selected{% endif %}>Price desc</option>
         </select>
-        
+
         <button type="button" id="clearSortingButton" onclick="clearSorting()" class="clear-sorting-button">
           <i class="fas fa-times-circle"></i>
         </button>
@@ -93,7 +93,7 @@
   function clearSorting() {
     // Reset the sort_by select to its default state
     document.querySelector('select[name="sort_by"]').value = '';
-    
+
     // Submit the form to refresh the page with the default sorting
     document.getElementById('sortingForm').submit();
   }

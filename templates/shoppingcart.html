@@ -20,12 +20,14 @@
                 <td>{{ details['price'] }}</td>
                 <td>
                     <form action="{{ url_for('updatecart', product_id=product_id) }}" method="post" class="form-inline">
-                        <input type="number" name="quantity" value="{{ details['quantity'] }}" min="1" class="form-control">
+                        <input type="number" name="quantity" value="{{ details['quantity'] }}" min="1"
+                            class="form-control">
                         <input type="submit" value="Update" class="btn btn-primary ml-2">
                     </form>
                 </td>
                 <td>{{ (details['price']|float) * details['quantity'] }}</td>
-                <td><a href="{{ url_for('deletefromcart', product_id=product_id) }}" class="btn btn-danger">Remove</a></td>
+                <td><a href="{{ url_for('deletefromcart', product_id=product_id) }}" class="btn btn-danger">Remove</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

@@ -296,6 +296,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="languageDropdown">
                             <a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a>
+                            <a class="dropdown-item" href="#" onclick="changeLanguage('fr')">French</a>
                             <a class="dropdown-item" href="#" onclick="changeLanguage('ja')">Japanese</a>
                         </div>
                     </li>
@@ -322,9 +323,7 @@
                 </button>
             </div>
             <div class="card-body" id="chatbody">
-                <!-- Chat messages go here -->
                 <div class="chatbot-message">Welcome! How can we help you today?</div>
-                <!-- Add more messages as needed -->
             </div>
             <div class="card-footer">
                 <input type="text" id="userMessage" class="form-control" placeholder="Type a message...">
@@ -343,14 +342,11 @@
             var chatbotInterface = document.getElementById('chatbotInterface');
 
             if (chatbotInterface.style.opacity === "1") {
-                // Fade out the chatbot interface
                 chatbotInterface.style.opacity = "0";
-                // Wait for the transition to finish before hiding the interface
                 setTimeout(function () {
                     chatbotInterface.style.visibility = "hidden";
-                }, 500); // This timeout duration should match the transition duration
+                }, 500);
             } else {
-                // Show the chatbot interface
                 chatbotInterface.style.visibility = "visible";
                 chatbotInterface.style.opacity = "1";
                 chatbotInterface.style.display = "block";

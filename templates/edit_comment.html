@@ -14,14 +14,14 @@
             <div class="form-group">
               {{ comment_form.comment.label(class="form-control-label") }}
               {% if comment_form.comment.errors %}
-                {{ comment_form.comment(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                  {% for error in comment_form.comment.errors %}
-                    <span>{{ error }}</span>
-                  {% endfor %}
-                </div>
+              {{ comment_form.comment(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in comment_form.comment.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
               {% else %}
-                {{ comment_form.comment(class="form-control form-control-lg") }}
+              {{ comment_form.comment(class="form-control form-control-lg") }}
               {% endif %}
             </div>
 
@@ -32,17 +32,19 @@
                 {% set rating_value = comment_form.rating.data|int %}
                 {% for i in range(1, 6) %}
                 <div class="star-container">
-                  <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="rating-checkbox" {% if i == rating_value %} checked {% endif %} />
-                  <label for="star{{ i }}"><span class="fa fa-star {% if i <= rating_value %} checked {% endif %}"></span></label>
+                  <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="rating-checkbox" {% if
+                    i==rating_value %} checked {% endif %} />
+                  <label for="star{{ i }}"><span
+                      class="fa fa-star {% if i <= rating_value %} checked {% endif %}"></span></label>
                 </div>
                 {% endfor %}
               </div>
               {% if comment_form.rating.errors %}
-                <div class="invalid-feedback">
-                  {% for error in comment_form.rating.errors %}
-                    <span>{{ error }}</span>
-                  {% endfor %}
-                </div>
+              <div class="invalid-feedback">
+                {% for error in comment_form.rating.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
               {% endif %}
             </div>
 

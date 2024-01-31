@@ -3,22 +3,23 @@
 {% block title %}Submitted{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <h2 class="text-center my-4">Issue submitted!</h2>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h2 class="text-center my-4">Issue submitted!</h2>
 
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">We have received your issue!</h5>
-                        <p class="card-text">Your issue has been submitted successfully. We will provide support to you shortly, and we will contact you through your email.</p>
-                        <p class="card-text">Issue id: c9bc7db23d0f4364a56dd09fe1345b15</p>
-                        <form action="{{ url_for('home') }}" method="post">
-                            <input type="submit" value="Back" class="btn btn-primary"/>
-                        </form>
-                    </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">We have received your issue!</h5>
+                    <p class="card-text">Your issue has been submitted successfully. We will provide support to you
+                        shortly, and we will contact you through your email.</p>
+                    <p class="card-text">Issue id: c9bc7db23d0f4364a56dd09fe1345b15</p>
+                    <form action="{{ url_for('home') }}" method="post">
+                        <input type="submit" value="Back" class="btn btn-primary" />
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

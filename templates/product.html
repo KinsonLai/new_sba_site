@@ -109,39 +109,39 @@
 </div>
 
 <!-- Add Comment and Rating Form -->
-    {% if current_user.is_authenticated %}
-    {% if not user_commented and not user_rated %}
-    <div class="card mt-4">
-      <div class="card-body">
-        <h5 class="card-title">Leave a Comment and Give a Rating</h5>
-        <form action="{{ url_for('view_product', product_id=product.id) }}" method="POST">
-          {{ form.hidden_tag() }}
-          <div class="form-group">
-            {{ form.comment(class="form-control") }}
-          </div>
-          <div class="form-group">
-            <label for="rating">Rating:</label>
-            <div class="rating">
-              {% set rating_value = form.rating.data|default(0) %}
-              {% set rating_value = rating_value|int %}
-              {% for i in range(1, 6) %}
-              <div class="star-container">
-                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="rating-checkbox" {% if
-                  rating_value==i %}checked{% endif %} />
-                <label for="star{{ i }}"><span
-                    class="fa fa-star {% if i <= rating_value %}checked{% endif %}"></span></label>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Comment and Rating</button>
-        </form>
+{% if current_user.is_authenticated %}
+{% if not user_commented and not user_rated %}
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">Leave a Comment and Give a Rating</h5>
+    <form action="{{ url_for('view_product', product_id=product.id) }}" method="POST">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.comment(class="form-control") }}
       </div>
-    </div>
-    {% endif %}
-    {% else %}
-     <p>Please <a href="{{ url_for('login') }}">log in</a> to leave a comment or give a rating.</p>
-    {% endif %}
+      <div class="form-group">
+        <label for="rating">Rating:</label>
+        <div class="rating">
+          {% set rating_value = form.rating.data|default(0) %}
+          {% set rating_value = rating_value|int %}
+          {% for i in range(1, 6) %}
+          <div class="star-container">
+            <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="rating-checkbox" {% if
+              rating_value==i %}checked{% endif %} />
+            <label for="star{{ i }}"><span
+                class="fa fa-star {% if i <= rating_value %}checked{% endif %}"></span></label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Comment and Rating</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% else %}
+<p>Please <a href="{{ url_for('login') }}">log in</a> to leave a comment or give a rating.</p>
+{% endif %}
 
 <!-- Improved JavaScript with smoother interaction -->
 <script>

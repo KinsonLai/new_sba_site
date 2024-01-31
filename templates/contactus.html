@@ -3,30 +3,72 @@
 {% block title %}Contact Us{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <h2 class="text-center my-4">Contact Us</h2>
-                <form>
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" placeholder="Your Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Your Email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <input type="text" class="form-control" id="subject" placeholder="Subject" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea class="form-control" id="message" rows="3" required></textarea>
-                    </div>
-                    <a href="/contact-success" class="btn btn-primary">Submit</button></a>
-                </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="contact-form card mt-5 mb-5">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Get in Touch</h3>
+                    <p class="text-center text-muted mb-4">Have a question or just want to say hi? We'd love to hear
+                        from you.</p>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                            <div class="invalid-feedback">Please enter your name.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                            <div class="invalid-feedback">Please enter a subject.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Your message"
+                                required></textarea>
+                            <div class="invalid-feedback">Please enter your message.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+</div>
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        // Perform form validation or AJAX submission here
+        // For simplicity, we'll just show a thank you message
+        this.innerHTML = '<div class="alert alert-success" role="alert">Thank you for contacting us. We will get back to you shortly.</div>';
+    });
+</script>
+<style>
+    .contact-form {
+        background: #f9f9f9;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+        background: #0056b3;
+        border: none;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background: #004494;
+    }
+
+    .form-control:focus {
+        border-color: #0056b3;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 86, 179, 0.6);
+    }
+</style>
 {% endblock %}

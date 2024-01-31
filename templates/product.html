@@ -1,22 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Add the necessary CSS for the stars -->
+<!-- Improved CSS styles -->
 <style>
   .fa-star {
-    color: grey;
+    color: #ccc;
+    /* Light grey color */
+    transition: color 0.2s;
+    /* Smooth color transition */
   }
 
   .fa-star.checked {
-    color: gold;
+    color: #f0ad4e;
+    /* Bootstrap's 'warning' color, or use 'gold' */
+  }
+
+  .rating>div:hover .fa-star,
+  .rating>div:hover~div .fa-star {
+    color: #f0ad4e;
+    /* Color stars on hover */
   }
 
   .rating>div {
     display: inline-block;
+    position: relative;
   }
 
   .rating>div>input {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
   }
 
   .rating>div>label {
@@ -24,58 +41,74 @@
     display: inline-block;
     width: 20px;
   }
+
+  /* Restyle the card to be more modern and clean */
+  .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+  }
+
+  .card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-footer {
+    background-color: #f8f9fa;
+    /* Bootstrap's light background */
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    /* Bootstrap primary color */
+    border-color: #007bff;
+  }
+
+  .btn-warning {
+    background-color: #ffc107;
+    /* Bootstrap warning color */
+    border-color: #ffc107;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    /* Bootstrap danger color */
+    border-color: #dc3545;
+  }
+
+  /* Responsive image for product */
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
 </style>
 
-<div class="container">
+<!-- Product Display Section -->
+<div class="container mt-4">
   <div class="row">
     <div class="col-md-6">
-      <img src="{{ url_for('static', filename=product.image_path) }}" alt="Product Image" class="img-fluid">
+      <img src="{{ url_for('static', filename=product.image_path) }}" alt="Product Image" class="img-thumbnail">
     </div>
     <div class="col-md-6">
-      <h1>{{ product.name }}</h1>
-      <p>{{ product.description }}</p>
-      <p>Price: ${{ product.price }}</p>
-      <p>Rating: {{ product.rating|round }}</p>
-      <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
+      <h2 class="mb-3">{{ product.name }}</h2>
+      <p class="lead">{{ product.description }}</p>
+      <h3 class="mb-4 text-primary">Price: ${{ product.price }}</h3>
+      <div class="rating mb-2">
+        {% for i in range(1, 6) %}
+        <span class="fa fa-star {{ 'checked' if i <= product.rating }}"></span>
+        {% endfor %}
+        <span class="ml-2">{{ product.rating|round(1) }} stars</span>
+      </div>
+      <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-success btn-lg">Add to Cart</a>
     </div>
   </div>
 </div>
 
-<!-- Comment Section -->
-<div class="row mt-4">
-  <div class="col-md-12">
-    <h3>Comments</h3>
-    {% for comment in product.comments %}
-    <div class="card mb-2">
-      <div class="card-body">
-        <h5 class="card-title">{{ comment.username }}</h5>
-        <p class="card-text">{{ comment.comment }}</p>
-        <p class="card-text">Rating: {{ comment.rating }}</p>
-        <div class="rating">
-          {% set comment_rating = comment.rating|default(0) %}
-          {% set comment_rating = comment_rating|int %}
-          {% for i in range(5) %}
-          {% if i < comment_rating %} <span class="fa fa-star checked"></span>
-            {% else %}
-            <span class="fa fa-star"></span>
-            {% endif %}
-            {% endfor %}
-        </div>
-        <!-- Edit and Delete Buttons -->
-        {% if current_user.is_authenticated and current_user.username == comment.username %}
-        <a href="{{ url_for('edit_comment', comment_id=comment.id) }}" class="btn btn-warning mt-2">Edit</a>
-        <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST" class="d-inline">
-          <button type="submit" class="btn btn-danger mt-2">Delete</button>
-        </form>
-        {% endif %}
-      </div>
-      <div class="card-footer">
-        <small class="text-muted">{{ comment.date }}</small>
-      </div>
-    </div>
-    {% endfor %}
-
-    <!-- Add Comment and Rating Form -->
+<!-- Add Comment and Rating Form -->
     {% if current_user.is_authenticated %}
     {% if not user_commented and not user_rated %}
     <div class="card mt-4">
@@ -106,13 +139,11 @@
       </div>
     </div>
     {% endif %}
-    {% else %}   
+    {% else %}
      <p>Please <a href="{{ url_for('login') }}">log in</a> to leave a comment or give a rating.</p>
     {% endif %}
-  </div>
-</div>
 
-<!-- Add the necessary JavaScript for the stars -->
+<!-- Improved JavaScript with smoother interaction -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var stars = document.querySelectorAll('.star-container');

@@ -3,69 +3,128 @@
 {% block title %}Admin Panel{% endblock %}
 
 {% block content %}
-  <div class="container">
-    <h1 class="my-4">Admin Control Panel</h1>
-  
-    <h2>Add Product</h2>
-    <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="name" class="form-label">Name:</label>
-        <input type="text" class="form-control" name="name" required>
-      </div>
-      <div class="mb-3">
-        <label for="name" class="form-label">Category:</label>
-        <input type="text" class="form-control" name="category" required>
-      </div>
-      <div class="mb-3">
-        <label for="price" class="form-label">Price:</label>
-        <input type="number" class="form-control" name="price" step="0.5" required>
-      </div>
-      <div class="mb-3">
-        <label for="description" class="form-label">Description:</label>
-        <textarea class="form-control" name="description" required></textarea>
-      </div>
-      <div class="mb-3">
-        <label for="image" class="form-label">Image:</label>
-        <input type="file" class="form-control" name="image">
-      </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="latest_product" id="latest_product">
-        <label class="form-check-label" for="latest_product">Latest Product</label>
-      </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="popular_product" id="popular_product">
-        <label class="form-check-label" for="popular_product">Popular Product</label>
-      </div>
-      <button type="submit" class="btn btn-primary mt-3">Add Product</button>
-    </form>
-  
-    <h2 class="mt-5">Manage Products</h2>
-    <table class="table mt-3">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Rating</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-        <tr>
-          <td>{{ product.name }}</td>
-          <td>{{ product.price }}</td>
-          <td>{{ product.rating }}</td>
-          <td>
-            <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-sm btn-primary">View</a>
-            <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-warning">Edit</a>
-            <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('Are you sure you want to delete this product?');">
-              <input type="hidden" name="_method" value="POST">
-              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<div class="container py-5">
+  <h1 class="my-4 text-center">Admin Control Panel</h1>
+
+  <!-- Add Product Form -->
+  <div class="card shadow mb-5">
+    <div class="card-body">
+      <h2 class="card-title">Add Product</h2>
+      <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
+        <!-- Product Name -->
+        <div class="mb-3">
+          <label for="name" class="form-label">Name:</label>
+          <input type="text" class="form-control" name="name" required>
+        </div>
+        <!-- Category -->
+        <div class="mb-3">
+          <label for="category" class="form-label">Category:</label>
+          <input type="text" class="form-control" name="category" required>
+        </div>
+        <!-- Price -->
+        <div class="mb-3">
+          <label for="price" class="form-label">Price:</label>
+          <input type="number" class="form-control" name="price" step="0.01" required>
+        </div>
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <textarea class="form-control" name="description" rows="3" required></textarea>
+        </div>
+        <!-- Image File Input -->
+        <div class="mb-3">
+          <label for="image" class="form-label">Image:</label>
+          <input type="file" class="form-control" name="image" accept="image/*">
+        </div>
+        <!-- Latest Product Checkbox -->
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" name="latest_product" id="latest_product">
+          <label class="form-check-label" for="latest_product">Latest Product</label>
+        </div>
+        <!-- Popular Product Checkbox -->
+        <div class="form-check mb-4">
+          <input type="checkbox" class="form-check-input" name="popular_product" id="popular_product">
+          <label class="form-check-label" for="popular_product">Popular Product</label>
+        </div>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Add Product <i class="fas fa-plus-circle"></i></button>
+
+      </form>
+    </div>
   </div>
+
+  <!-- Product Management Table -->
+  <div class="card shadow">
+    <div class="card-body">
+      <h2 class="card-title">Manage Products</h2>
+      <!-- Search Bar -->
+      <input class="form-control mb-3" id="productSearch" type="text" placeholder="Search products...">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Rating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          {% for product in products %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>${{ product.price }}</td>
+            <td>{{ product.rating }}</td>
+            <td>
+              <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-sm btn-info">View <i
+                  class="fas fa-eye"></i></a>
+              <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-warning">Edit <i
+                  class="fas fa-edit"></i></a>
+              <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                data-target="#deleteModal{{ product.id }}">Delete <i class="fas fa-trash-alt"></i></button>
+
+              <!-- Delete Confirmation Modal -->
+              <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel"
+                aria-hidden="true">
+                <div class=" modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                      <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you want to delete this product?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Search bar functionality
+  document.getElementById('productSearch').addEventListener('keyup', function () {
+    var searchTerm = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#productTableBody tr');
+    rows.forEach(function (row) {
+      var name = row.querySelector('td:first-child').textContent.toLowerCase();
+      if (name.includes(searchTerm)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+</script>
 {% endblock %}

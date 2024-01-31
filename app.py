@@ -14,8 +14,8 @@ from googletrans import Translator
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import string
-
 import nltk
+
 nltk.download('punkt')
 nltk.download('stopwords')
 
@@ -43,7 +43,7 @@ synonyms = {
 def generate_response(message):
     # Tokenize and lower the case of the message
     words = word_tokenize(message.lower())
-    
+
     # Remove stopwords and punctuation
     words = [word for word in words if word not in stopwords.words('english') and word not in string.punctuation]
 
@@ -127,7 +127,7 @@ class Comment(db.Model):
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    
+
 
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[DataRequired()])
@@ -288,7 +288,7 @@ def edit_comment(comment_id):
 
         # Add the new rating to the total, then divide by the number of ratings
         product.rating = (total_rating_excluding_this + comment.rating) / product.num_ratings
-        
+
         db.session.commit()
 
         flash('Your comment and rating have been updated!', 'success')
@@ -307,7 +307,7 @@ def delete_comment(comment_id):
     # Ensure the user is the author of the comment
     if comment.username != current_user.username:
         abort(403)
-    
+
     # Get the product associated with this comment
     product = Product.query.get(comment.product_id)
 
@@ -448,7 +448,7 @@ def filter_products(search_query, category, sort_by):
 
     if sort_by == 'rating':
         query = query.order_by(desc(Product.rating))
-    
+
     if sort_by == 'price desc':
         query = query.order_by(desc(Product.price))
 
@@ -493,7 +493,7 @@ def login():
         if not user or not user.check_password(password):
             flash('Invalid username/email or password. Please try again.', 'danger')
             return redirect(url_for('login'))
-        
+
         login_user(user)  # This is the proper way to log in a user
 
         flash('Logged in successfully!', 'success')
@@ -562,7 +562,8 @@ def payment():
 
 @app.route('/success')
 def success():
-    return render_template('success.html')
+    tracking_number = str(uuid.uuid4())
+    return render_template('success.html', tracking_number=tracking_number)
 
 @app.route('/support')
 def support():

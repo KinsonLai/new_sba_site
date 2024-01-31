@@ -2,135 +2,146 @@
 
 {% block content %}
 <div class="container my-4">
-    <h2>Customer Assistance Form</h2>
-    <form id="assistanceForm">
-        <div class="mb-3">
-            <label for="nameInput" class="form-label">Name</label>
-            <input type="text" class="form-control" id="nameInput" name="name" placeholder="Enter your name" required>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-headset"></i> Customer Assistance Form</h2>
+                </div>
+                <div class="card-body">
+                    <form id="assistanceForm">
+                        <div class="mb-3">
+                            <label for="nameInput" class="form-label"><i class="fas fa-user"></i> Name</label>
+                            <input type="text" class="form-control" id="nameInput" name="name"
+                                placeholder="Enter your name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailInput" class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" class="form-control" id="emailInput" name="email"
+                                placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="problemSelect" class="form-label"><i class="fas fa-tasks"></i> Problem
+                                Category</label>
+                            <select class="form-select" id="problemSelect" name="problem_category" required>
+                                <option value="">Select a problem...</option>
+                                <option value="orderIssue">Order Issue</option>
+                                <option value="productFaulty">Faulty Product</option>
+                                <option value="delivery">Delivery Problem</option>
+                                <option value="refund">Refund Query</option>
+                                <option value="techSupport">Technical Support</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <!-- Order Issue Fields -->
+                        <div id="orderIssueFields" class="problem-fields d-none">
+                            <div class="mb-3">
+                                <label for="orderNumber" class="form-label">Order Number</label>
+                                <input type="text" class="form-control" id="orderNumber" name="order_number"
+                                    placeholder="Enter your order number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="orderIssueDetail" class="form-label">Issue Detail</label>
+                                <textarea class="form-control" id="orderIssueDetail" name="order_issue_detail" rows="3"
+                                    placeholder="Describe the issue with your order."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Faulty Product Fields -->
+                        <div id="productFaultyFields" class="problem-fields d-none">
+                            <div class="mb-3">
+                                <label for="productModel" class="form-label">Product Model</label>
+                                <input type="text" class="form-control" id="productModel" name="product_model"
+                                    placeholder="Enter the product model">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productIssueDetail" class="form-label">Issue Detail</label>
+                                <textarea class="form-control" id="productIssueDetail" name="product_issue_detail"
+                                    rows="3" placeholder="Describe the issue with your product."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Problem Fields -->
+                        <div id="deliveryFields" class="problem-fields d-none">
+                            <div class="mb-3">
+                                <label for="trackingNumber" class="form-label">Tracking Number</label>
+                                <input type="text" class="form-control" id="trackingNumber" name="tracking_number"
+                                    placeholder="Enter the tracking number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="deliveryIssueDetail" class="form-label">Issue Detail</label>
+                                <textarea class="form-control" id="deliveryIssueDetail" name="delivery_issue_detail"
+                                    rows="3" placeholder="Describe the issue with your delivery."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Refund Query Fields -->
+                        <div id="refundFields" class="problem-fields d-none">
+                            <div class="mb-3">
+                                <label for="refundOrderNumber" class="form-label">Order Number</label>
+                                <input type="text" class="form-control" id="refundOrderNumber"
+                                    name="refund_order_number" placeholder="Enter your order number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="refundReason" class="form-label">Reason for Refund</label>
+                                <textarea class="form-control" id="refundReason" name="refund_reason" rows="3"
+                                    placeholder="Describe the reason for the refund."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Technical Support Fields -->
+                        <div id="techSupportFields" class="problem-fields d-none">
+                            <div class="mb-3">
+                                <label for="techIssueDetail" class="form-label">Technical Issue Detail</label>
+                                <textarea class="form-control" id="techIssueDetail" name="tech_issue_detail" rows="3"
+                                    placeholder="Describe the issue you are experiencing with your device or service."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Other Issue Fields -->
+                        <div id="otherFields" class="problem-fields d-none">
+                            <div class="mb-3">
+                                <label for="otherIssueLable" class="form-label">Order Number</label>
+                                <input type="text" class="form-control" id="otherIssusLable" name="other_issue_lable"
+                                    placeholder="Enter your issue">
+                            </div>
+                            <div class="mb-3">
+                                <label for="otherIssueDetail" class="form-label">Issue Detail</label>
+                                <textarea class="form-control" id="otherIssueDetail" name="other_issue_detail" rows="3"
+                                    placeholder="Please provide more details about your issue."></textarea>
+                            </div>
+                        </div>
+                        <!-- Submit Button -->
+                        <a href="{{url_for('support_submitted')}}" class="btn btn-primary"><i
+                                class="fas fa-paper-plane"></i>
+                            Submit</a>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="emailInput" class="form-label">Email</label>
-            <input type="email" class="form-control" id="emailInput" name="email" placeholder="Enter your email"
-                required>
-        </div>
-        <div class="mb-3">
-            <label for="problemSelect" class="form-label">Problem Category</label>
-            <select class="form-select" id="problemSelect" name="problem_category" required>
-                <option value="">Select a problem...</option>
-                <option value="orderIssue">Order Issue</option>
-                <option value="productFaulty">Faulty Product</option>
-                <option value="delivery">Delivery Problem</option>
-                <option value="refund">Refund Query</option>
-                <option value="techSupport">Technical Support</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var problemSelect = document.getElementById('problemSelect');
+            var problemFields = document.querySelectorAll('.problem-fields');
 
-        <!-- Order Issue Fields -->
-        <div id="orderIssueFields" class="problem-fields d-none">
-            <div class="mb-3">
-                <label for="orderNumber" class="form-label">Order Number</label>
-                <input type="text" class="form-control" id="orderNumber" name="order_number"
-                    placeholder="Enter your order number">
-            </div>
-            <div class="mb-3">
-                <label for="orderIssueDetail" class="form-label">Issue Detail</label>
-                <textarea class="form-control" id="orderIssueDetail" name="order_issue_detail" rows="3"
-                    placeholder="Describe the issue with your order."></textarea>
-            </div>
-        </div>
+            problemSelect.addEventListener('change', function (e) {
+                // Hide all problem fields initially
+                problemFields.forEach(function (field) {
+                    field.classList.add('d-none');
+                });
 
-        <!-- Faulty Product Fields -->
-        <div id="productFaultyFields" class="problem-fields d-none">
-            <div class="mb-3">
-                <label for="productModel" class="form-label">Product Model</label>
-                <input type="text" class="form-control" id="productModel" name="product_model"
-                    placeholder="Enter the product model">
-            </div>
-            <div class="mb-3">
-                <label for="productIssueDetail" class="form-label">Issue Detail</label>
-                <textarea class="form-control" id="productIssueDetail" name="product_issue_detail" rows="3"
-                    placeholder="Describe the issue with your product."></textarea>
-            </div>
-        </div>
+                // Get value of selected option
+                var selectedOption = this.options[this.selectedIndex].value;
 
-        <!-- Delivery Problem Fields -->
-        <div id="deliveryFields" class="problem-fields d-none">
-            <div class="mb-3">
-                <label for="trackingNumber" class="form-label">Tracking Number</label>
-                <input type="text" class="form-control" id="trackingNumber" name="tracking_number"
-                    placeholder="Enter the tracking number">
-            </div>
-            <div class="mb-3">
-                <label for="deliveryIssueDetail" class="form-label">Issue Detail</label>
-                <textarea class="form-control" id="deliveryIssueDetail" name="delivery_issue_detail" rows="3"
-                    placeholder="Describe the issue with your delivery."></textarea>
-            </div>
-        </div>
-
-        <!-- Refund Query Fields -->
-        <div id="refundFields" class="problem-fields d-none">
-            <div class="mb-3">
-                <label for="refundOrderNumber" class="form-label">Order Number</label>
-                <input type="text" class="form-control" id="refundOrderNumber" name="refund_order_number"
-                    placeholder="Enter your order number">
-            </div>
-            <div class="mb-3">
-                <label for="refundReason" class="form-label">Reason for Refund</label>
-                <textarea class="form-control" id="refundReason" name="refund_reason" rows="3"
-                    placeholder="Describe the reason for the refund."></textarea>
-            </div>
-        </div>
-
-        <!-- Technical Support Fields -->
-        <div id="techSupportFields" class="problem-fields d-none">
-            <div class="mb-3">
-                <label for="techIssueDetail" class="form-label">Technical Issue Detail</label>
-                <textarea class="form-control" id="techIssueDetail" name="tech_issue_detail" rows="3"
-                    placeholder="Describe the issue you are experiencing with your device or service."></textarea>
-            </div>
-        </div>
-
-        <!-- Other Issue Fields -->
-        <div id="otherFields" class="problem-fields d-none">
-            <div class="mb-3">
-                <label for="otherIssueLable" class="form-label">Order Number</label>
-                <input type="text" class="form-control" id="otherIssusLable" name="other_issue_lable"
-                    placeholder="Enter your issue">
-            </div>
-            <div class="mb-3">
-                <label for="otherIssueDetail" class="form-label">Issue Detail</label>
-                <textarea class="form-control" id="otherIssueDetail" name="other_issue_detail" rows="3"
-                    placeholder="Please provide more details about your issue."></textarea>
-            </div>
-        </div>
-
-        <a href=" {{url_for('support_submitted')}} " class="btn btn-primary">Submit</a>
-    </form>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var problemSelect = document.getElementById('problemSelect');
-        var problemFields = document.querySelectorAll('.problem-fields');
-
-        problemSelect.addEventListener('change', function (e) {
-            // Hide all problem fields initially
-            problemFields.forEach(function (field) {
-                field.classList.add('d-none');
-            });
-
-            // Get value of selected option
-            var selectedOption = this.options[this.selectedIndex].value;
-
-            // Check if an additional field needs to be displayed
-            if (selectedOption) {
-                var selectedField = document.getElementById(selectedOption + 'Fields');
-                if (selectedField) {
-                    selectedField.classList.remove('d-none');
+                // Check if an additional field needs to be displayed
+                if (selectedOption) {
+                    var selectedField = document.getElementById(selectedOption + 'Fields');
+                    if (selectedField) {
+                        selectedField.classList.remove('d-none');
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 {% endblock %}

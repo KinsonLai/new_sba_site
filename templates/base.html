@@ -30,6 +30,79 @@
         }
     </script>
     <style>
+        html {
+            overflow-x: hidden;
+        }
+
+        /* This styles the scrollbar track */
+        ::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        /* This styles the scrollbar thumb (the draggable part) */
+        ::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 10px;
+            border: 3px solid #f1f1f1;
+            /* same as track background for a "floating" look */
+        }
+
+        /* This styles the scrollbar thumb on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+        /* This sets the width of the scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        .navbar-nav .nav-link {
+            color: #555;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #0056b3;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+
+        .banner-container {
+            height: 200px;
+            /* Adjust as needed */
+            background-color: #e9ecef;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Optional: make sure the dropdown menu stays open when you hover over the items */
+        .dropdown-menu:hover {
+            display: block;
+        }
+
         #chatbotContainer {
             position: fixed;
             bottom: 0;
@@ -155,16 +228,18 @@
     <div class="container-fluid p-0 bg-light">
         <div class="row justify-content-center align-items-center banner-container">
             <div class="col-12 text-center">
-                <img src="{{url_for('static', filename='logo.gif')}}" alt="{{ ('logo animation') }}" class="img-fluid">
+                <img src="{{url_for('static', filename='logo.gif')}}" alt="{{ 'logo animation' }}" class="img-fluid">
             </div>
         </div>
     </div>
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-            <img src="{{url_for('static', filename='logo.png')}}" alt="logo" class="img-fluid" width="80">
-            <a class="navbar-brand d-none d-lg-inline" href="/">{{ ('Jaygo\'s Computer') }}</a>
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="img-fluid" width="80">
+                <span class="d-none d-lg-inline">Jaygo's Computer</span>
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="{{ ('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
@@ -180,41 +255,40 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/about">{{ ('About') }}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contact">{{ ('Contact Us') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/support">{{ ('Support') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/shoppingcart" id="mobileNav">{{ ('Shopping Cart') }}</a>
+                    <!-- Grouping Contact and Support in a Help dropdown menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="helpDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Help
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="helpDropdown">
+                            <a class="dropdown-item" href="/contact">Contact</a>
+                            <a class="dropdown-item" href="/support">Support</a>
+                        </div>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    {% if username %}
+                    <!-- The Shopping Cart icon aligned to the right side -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/shoppingcart"><img
-                                src="{{url_for('static', filename='shopping-cart.png')}}" alt="shopping cart"
-                                width="30" id="mobileHide"></a>
+                        <a class="nav-link" href="/shoppingcart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
                     </li>
+                    <!-- User authentication links -->
+                    {% if username %}
                     <li class="nav-item">
                         <span class="navbar-text username">{{ username }}</span>
                         <a href="/logout" class="btn btn-outline-primary btn-sm ml-2">{{ ('Logout') }}</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/shoppingcart"><img
-                                src="{{url_for('static', filename='shopping-cart.png')}}" alt="shopping cart"
-                                width="30" id="mobileHide"></a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/login">{{ ('Login') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/register">{{ ('Register') }}</a>
                     </li>
-
                     {% endif %}
+                    <!-- Language dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -222,7 +296,6 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="languageDropdown">
                             <a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a>
-                            <a class="dropdown-item" href="#" onclick="changeLanguage('fr')">French</a>
                             <a class="dropdown-item" href="#" onclick="changeLanguage('ja')">Japanese</a>
                         </div>
                     </li>
@@ -332,10 +405,39 @@
         });
     </script>
     <!-- Footer -->
-    <footer class="footer mt-auto py-3">
-        <div class="container">
-            <span class="text-muted">&copy; 2023 Jaygo's Computer</span>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-12">
+                    <p class="text-muted mb-0">&copy; 2023 Jaygo's Computer. All rights reserved.</p>
+                    <p class="text-muted">
+                        Email: <a href="mailto:support@jaygoscomputer.com"
+                            class="text-muted">support@jaygoscomputer.com</a> |
+                        Phone: <a href="tel:+1234567890" class="text-muted">(123) 456-7890</a>
+                    </p>
+                </div>
+            </div>
         </div>
+        <style>
+            .footer {
+                background-color: #f8f9fa;
+                border-top: 1px solid #e7e7e7;
+            }
+
+            .footer a {
+                color: #6c757d;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+            .footer a:hover {
+                color: #0056b3;
+            }
+
+            .text-muted {
+                color: #6c757d !important;
+            }
+        </style>
     </footer>
 </body>
 
